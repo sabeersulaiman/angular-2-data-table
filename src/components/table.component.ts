@@ -14,9 +14,9 @@ import { TABLE_STYLE } from "./table.style";
 
 
 @Component({
-  selector: 'data-table',
-  template: TABLE_TEMPLATE,
-  styles: [TABLE_STYLE]
+    selector: 'data-table',
+    template: TABLE_TEMPLATE,
+    styles: [TABLE_STYLE]
 })
 export class DataTable implements DataTableParams, OnInit {
 
@@ -152,9 +152,9 @@ export class DataTable implements DataTableParams, OnInit {
     }
 
     private _initDefaultClickEvents() {
-        this.headerClick.subscribe(tableEvent => this.sortColumn(tableEvent.column));
+        this.headerClick.subscribe((tableEvent: any) => this.sortColumn(tableEvent.column));
         if (this.selectOnRowClick) {
-            this.rowClick.subscribe(tableEvent => tableEvent.row.selected = !tableEvent.row.selected);
+            this.rowClick.subscribe((tableEvent: any) => tableEvent.row.selected = !tableEvent.row.selected);
         }
     }
 
@@ -195,7 +195,7 @@ export class DataTable implements DataTableParams, OnInit {
         };
     }
 
-    _scheduledReload = null;
+    _scheduledReload: number = 0;
 
     // for avoiding cascading reloads if multiple params are set at once:
     _triggerReload() {
@@ -214,11 +214,11 @@ export class DataTable implements DataTableParams, OnInit {
     @Output() headerClick = new EventEmitter();
     @Output() cellClick = new EventEmitter();
 
-    private rowClicked(row: DataTableRow, event) {
+    private rowClicked(row: DataTableRow, event: any) {
         this.rowClick.emit({ row, event });
     }
 
-    private rowDoubleClicked(row: DataTableRow, event) {
+    private rowDoubleClicked(row: DataTableRow, event: any) {
         this.rowDoubleClick.emit({ row, event });
     }
 
@@ -276,7 +276,7 @@ export class DataTable implements DataTableParams, OnInit {
 
     // selection:
 
-    selectedRow: DataTableRow;
+    selectedRow: DataTableRow | undefined;
     selectedRows: DataTableRow[] = [];
 
     private _selectAllCheckbox = false;
@@ -325,7 +325,12 @@ export class DataTable implements DataTableParams, OnInit {
     // other:
 
     get substituteItems() {
-        return Array.from({ length: this.displayParams.limit - this.items.length });
+        if(this.displayParams.limit)
+            return Array.from({ length: this.displayParams.limit - this.items.length });
+        else {
+            this.displayParams.limit = 10;
+            return Array.from({ length: this.displayParams.limit - this.items.length });
+        }
     }
 
     // column resizing:
@@ -353,7 +358,7 @@ export class DataTable implements DataTableParams, OnInit {
          that offsetWidth sometimes contains out-of-date values. */
         if ((dx < 0 && (columnElement.offsetWidth + dx) <= this.resizeLimit) ||
             !columnElement.nextElementSibling || // resizing doesn't make sense for the last visible column
-            (dx >= 0 && ((<HTMLElement> columnElement.nextElementSibling).offsetWidth + dx) <= this.resizeLimit)) {
+            (dx >= 0 && ((<HTMLElement>columnElement.nextElementSibling).offsetWidth + dx) <= this.resizeLimit)) {
             return false;
         }
         return true;

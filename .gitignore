@@ -4,3 +4,5 @@
 /.idea
 /typings
 npm-debug.log
+*.ngfactory.ts
+*.ngsummary.json

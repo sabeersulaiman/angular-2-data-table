@@ -1,38 +1,35 @@
 {
-  "name": "angular-2-data-table",
-  "version": "0.1.2",
-  "description": "An Angular 2 data table, with pagination, sorting, expandable rows etc.",
-  "keywords": [
-    "angular",
-    "angular2",
-    "Angular 2",
-    "ng2",
-    "datatable",
-    "data-table",
-    "data table",
-    "pagination"
-  ],
+  "name": "ngx-simple-datatable",
+  "version": "0.0.1",
+  "description": "Simple Data Table",
   "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "scripts": {
-    "build": "rm -rf dist/* && tsc",
-    "serve": "rm -rf dist/ && tsc -w",
-    "prepublish": "npm run build"
+    "transpile": "ngc",
+    "package": "rollup -c",
+    "minify": "uglifyjs dist/bundles/datatable.umd.js --screw-ie8 --compress --mangle --comments --output dist/bundles/datatable.umd.min.js",
+    "build": "npm run transpile && npm run package && npm run minify"
   },
   "repository": {
     "type": "git",
-    "url": "git://git@github.com/ggmod/angular-2-data-table.git"
+    "url": "git+https://github.com/sabeersulaiman/angular-2-data-table.git"
   },
-  "peerDependencies": {
-    "@angular/core": "^2.0.0"
-  },
-  "author": "ggmod <ggmod64@gmail.com>",
+  "author": "sabeersulaiman <sabeersulaimanpv@gmail.com>",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sabeersulaiman/angular-2-data-table/issues"
+  },
+  "homepage": "https://github.com/sabeersulaiman/angular-2-data-table#readme",
   "devDependencies": {
-    "@angular/common": "^2.0.0",
-    "@angular/core": "^2.0.0",
-    "@angular/forms": "^2.0.0",
-    "rxjs": "^5.0.0-beta.12",
-    "typescript": "^2.0.2"
+    "@angular/compiler": "^4.4.6",
+    "@angular/compiler-cli": "^4.4.6",
+    "rollup": "^0.50.0",
+    "typescript": "^2.5.3",
+    "uglify-js": "^3.1.4"
+  },
+  "dependencies": {
+    "@angular/common": "^4.4.6",
+    "@angular/core": "^4.4.6",
+    "@angular/forms": "^4.4.6",
+    "rxjs": "^5.5.0"
   }
 }
