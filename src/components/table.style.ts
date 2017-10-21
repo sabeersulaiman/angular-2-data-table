@@ -1,4 +1,10 @@
 export const TABLE_STYLE = `
+td.filters input {
+    width: 100%;
+    padding: 5px;
+    border-radius: 3px;
+    border: 1px solid #dedede;
+}
 /* bootstrap override: */
 
 :host /deep/ .data-table.table > tbody+tbody {

@@ -6,7 +6,7 @@ import { DataTableColumn } from './column.component';
 import { DataTableRow } from './row.component';
 import { DataTableParams } from './types';
 import { RowCallback } from './types';
-import { DataTableTranslations, defaultTranslations } from './types';
+import { DataTableTranslations, defaultTranslations, SearchParam } from './types';
 import { drag } from '../utils/drag';
 import { TABLE_TEMPLATE } from './table.template';
 import { TABLE_STYLE } from "./table.style";
@@ -191,11 +191,12 @@ export class DataTable implements DataTableParams, OnInit {
             sortBy: this.sortBy,
             sortAsc: this.sortAsc,
             offset: this.offset,
-            limit: this.limit
+            limit: this.limit,
+            search: this.search
         };
     }
 
-    _scheduledReload: number = 0;
+    _scheduledReload: number | null = null;
 
     // for avoiding cascading reloads if multiple params are set at once:
     _triggerReload() {
@@ -214,15 +215,15 @@ export class DataTable implements DataTableParams, OnInit {
     @Output() headerClick = new EventEmitter();
     @Output() cellClick = new EventEmitter();
 
-    private rowClicked(row: DataTableRow, event: any) {
+    rowClicked(row: DataTableRow, event: any) {
         this.rowClick.emit({ row, event });
     }
 
-    private rowDoubleClicked(row: DataTableRow, event: any) {
+    rowDoubleClicked(row: DataTableRow, event: any) {
         this.rowDoubleClick.emit({ row, event });
     }
 
-    private headerClicked(column: DataTableColumn, event: MouseEvent) {
+    headerClicked(column: DataTableColumn, event: MouseEvent) {
         if (!this._resizeInProgress) {
             this.headerClick.emit({ column, event });
         } else {
@@ -230,7 +231,7 @@ export class DataTable implements DataTableParams, OnInit {
         }
     }
 
-    private cellClicked(column: DataTableColumn, row: DataTableRow, event: MouseEvent) {
+    cellClicked(column: DataTableColumn, row: DataTableRow, event: MouseEvent) {
         this.cellClick.emit({ row, column, event });
     }
 
@@ -247,6 +248,7 @@ export class DataTable implements DataTableParams, OnInit {
             params.offset = this.offset;
             params.limit = this.limit;
         }
+        params.search = this.search;
         return params;
     }
 
@@ -268,7 +270,7 @@ export class DataTable implements DataTableParams, OnInit {
         return count;
     }
 
-    private getRowColor(item: any, index: number, row: DataTableRow) {
+    getRowColor(item: any, index: number, row: DataTableRow) {
         if (this.rowColors !== undefined) {
             return (<RowCallback>this.rowColors)(item, row, index);
         }
@@ -325,7 +327,7 @@ export class DataTable implements DataTableParams, OnInit {
     // other:
 
     get substituteItems() {
-        if(this.displayParams.limit)
+        if (this.displayParams.limit)
             return Array.from({ length: this.displayParams.limit - this.items.length });
         else {
             this.displayParams.limit = 10;
@@ -362,5 +364,45 @@ export class DataTable implements DataTableParams, OnInit {
             return false;
         }
         return true;
+    }
+
+    search : SearchParam[] = [];
+
+    filterColumn(e: any, column: DataTableColumn) {
+        let newVal : string = e.target.value.trim();
+        let columnName: string = column.property;
+
+        let i: number = -1;
+        //find the search term column
+        this.search.map(
+            (s: SearchParam, index: number) => {
+                if(s.column == columnName) {
+                    i = index;
+                }
+            }
+        );
+
+        if(newVal == "") {
+            //remove this column search term if exists
+            if(i > -1) {
+                this.search.splice(i, 1);
+            }
+        }
+        else {
+            //there is some text in search
+            if(i > -1) {
+                this.search[i].term = newVal;
+            }
+            else {
+                let s: SearchParam = {
+                    column: columnName,
+                    term: newVal
+                };
+
+                this.search.push(s);
+            }
+        }
+
+        this._triggerReload();
     }
 }

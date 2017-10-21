@@ -28,6 +28,14 @@ export const TABLE_TEMPLATE = `
                         <span *ngIf="column.resizable" class="column-resize-handle" (mousedown)="resizeColumnStart($event, column, th)"></span>
                     </th>
                 </tr>
+                <tr>
+                    <td [hide]="!expandColumnVisible">&nbsp;</td>
+                    <td [hide]="!indexColumnVisible">&nbsp;</td>
+                    <td [hide]="!selectColumnVisible">&nbsp;</td>
+                    <td class="filters" *ngFor="let c of columns" [hide]="!c.visible">
+                        <input (input)="filterColumn($event, c)" type="text" class="filter" [placeholder]="c.header" [hide]="!c.filter">
+                    </td>
+                </tr>
             </thead>
             <tbody *ngFor="let item of items; let index=index" class="data-table-row-wrapper"
                    dataTableRow #row [item]="item" [index]="index" (selectedChange)="onRowSelectChanged(row)">

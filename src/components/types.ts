@@ -25,10 +25,15 @@ export var defaultTranslations = <DataTableTranslations>{
     paginationRange: 'Results'
 };
 
+export interface SearchParam {
+    column: string;
+    term: string;
+}
 
 export interface DataTableParams {
     offset?: number;
     limit?: number;
     sortBy?: string;
     sortAsc?: boolean;
+    search?: SearchParam[];
 }

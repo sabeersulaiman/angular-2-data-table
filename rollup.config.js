@@ -7,6 +7,7 @@ export default {
   globals: {
     '@angular/core': 'ng.core',
     '@angular/common': 'ng.common',
+    '@angular/forms': 'ng.forms',
     'rxjs/Observable': 'Rx',
     'rxjs/ReplaySubject': 'Rx',
     'rxjs/add/operator/map': 'Rx.Observable.prototype',
